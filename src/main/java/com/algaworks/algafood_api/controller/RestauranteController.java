@@ -54,7 +54,7 @@ public class RestauranteController {
 
             // Copia as propriedades de 'newRestaurante' para 'restaurante', ignorando 'id', 'formasPagamento', 'endereço'
             BeanUtils.copyProperties(newRestaurante, restaurante,
-                    "id", "formasPagamento", "endereco");
+                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
             // Salva a entidade atualizada no banco de dados
             restauranteRepository.save(restaurante);
