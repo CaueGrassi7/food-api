@@ -1,15 +1,12 @@
-package com.algaworks.algafood_api.service.infraestructure.repository;
+package com.algaworks.algafood_api.infraestructure.repository;
 
-import com.algaworks.algafood_api.domain.model.Restaurante;
+import com.algaworks.algafood_api.infraestructure.repository.spec.RestaurantesSpecs;
+import com.algaworks.algafood_api.model.Restaurante;
 import com.algaworks.algafood_api.repository.RestauranteRepository;
 import com.algaworks.algafood_api.repository.RestauranteRepositoryQueries;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -18,9 +15,6 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.algaworks.algafood_api.service.infraestructure.repository.spec.RestaurantesSpecs.comFreteGratis;
-import static com.algaworks.algafood_api.service.infraestructure.repository.spec.RestaurantesSpecs.comNomeSemelhante;
 
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
@@ -62,8 +56,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
     @Override
     public List<Restaurante> findComFreteGratis(String nome) {
-        return restauranteRepository.findAll(comFreteGratis()
-                .and(comNomeSemelhante(nome)));
+        return restauranteRepository.findAll(RestaurantesSpecs.comFreteGratis()
+                .and(RestaurantesSpecs.comNomeSemelhante(nome)));
     }
 
 }

@@ -1,6 +1,5 @@
-package com.algaworks.algafood_api.domain.model;
+package com.algaworks.algafood_api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.algaworks.algafood_api.domain.model;
+package com.algaworks.algafood_api.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

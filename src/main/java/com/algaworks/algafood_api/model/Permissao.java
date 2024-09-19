@@ -1,4 +1,4 @@
-package com.algaworks.algafood_api.domain.model;
+package com.algaworks.algafood_api.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

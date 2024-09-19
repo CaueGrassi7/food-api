@@ -1,16 +1,14 @@
-package com.algaworks.algafood_api.domain.model;
+package com.algaworks.algafood_api.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
-
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Produto {
+public class Cidade {
 
     @EqualsAndHashCode.Include
     @Id
@@ -20,17 +18,7 @@ public class Produto {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
-    private String descricao;
-
-    @Column(nullable = false)
-    private BigDecimal preco;
-
-    @Column(nullable = false)
-    private Boolean ativo;
-
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Restaurante restaurante;
-
+    private Estado estado;
 }

@@ -1,8 +1,9 @@
 package com.algaworks.algafood_api.controller;
 
-import com.algaworks.algafood_api.domain.model.Cozinha;
+import com.algaworks.algafood_api.model.Cozinha;
 
 import com.algaworks.algafood_api.repository.CozinhaRepository;
+import com.algaworks.algafood_api.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +26,9 @@ public class CozinhaController {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    @Autowired
+    private CadastroCozinhaService cadastroCozinhaService;
 
     @GetMapping()
     public List<Cozinha> listar() {
@@ -70,22 +74,28 @@ public class CozinhaController {
 
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
-        Optional<Cozinha> data = cozinhaRepository.findById(id);
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
+//        Optional<Cozinha> data = cozinhaRepository.findById(id);
+//
+//        if (data.isPresent()) {
+//            try {
+//                cozinhaRepository.deleteById(id);
+//                return ResponseEntity.ok().build();
+//            } catch (DataIntegrityViolationException e) {
+//                // Retorna 409 Conflict se a exclusão violar uma restrição de integridade
+//                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+//            }
+//        }
+//
+//        // Retorna 404 Not Found se a entidade não for encontrada
+//        return ResponseEntity.notFound().build();
+//    }
 
-        if (data.isPresent()) {
-            try {
-                cozinhaRepository.deleteById(id);
-                return ResponseEntity.ok().build();
-            } catch (DataIntegrityViolationException e) {
-                // Retorna 409 Conflict se a exclusão violar uma restrição de integridade
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-        }
-
-        // Retorna 404 Not Found se a entidade não for encontrada
-        return ResponseEntity.notFound().build();
+    @DeleteMapping("/{cozinhaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long cozinhaId) {
+       cadastroCozinhaService.excluir(cozinhaId);
     }
 
 

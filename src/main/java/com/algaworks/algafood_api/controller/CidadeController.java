@@ -1,6 +1,6 @@
 package com.algaworks.algafood_api.controller;
 
-import com.algaworks.algafood_api.domain.model.Cidade;
+import com.algaworks.algafood_api.model.Cidade;
 import com.algaworks.algafood_api.repository.CidadeRepository;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.beans.BeanUtils;

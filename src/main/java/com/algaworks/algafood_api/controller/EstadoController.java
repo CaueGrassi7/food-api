@@ -1,6 +1,6 @@
 package com.algaworks.algafood_api.controller;
 
-import com.algaworks.algafood_api.domain.model.Estado;
+import com.algaworks.algafood_api.model.Estado;
 
 import com.algaworks.algafood_api.repository.EstadoRepository;
 import org.springframework.beans.BeanUtils;

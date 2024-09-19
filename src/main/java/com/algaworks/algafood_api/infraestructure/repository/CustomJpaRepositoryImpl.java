@@ -1,4 +1,4 @@
-package com.algaworks.algafood_api.service.infraestructure.repository;
+package com.algaworks.algafood_api.infraestructure.repository;
 
 import com.algaworks.algafood_api.repository.CustomJpaRepository;
 import jakarta.persistence.EntityManager;

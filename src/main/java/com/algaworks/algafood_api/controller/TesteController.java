@@ -1,7 +1,7 @@
 package com.algaworks.algafood_api.controller;
 
-import com.algaworks.algafood_api.domain.model.Cozinha;
-import com.algaworks.algafood_api.domain.model.Restaurante;
+import com.algaworks.algafood_api.model.Cozinha;
+import com.algaworks.algafood_api.model.Restaurante;
 import com.algaworks.algafood_api.repository.CozinhaRepository;
 import com.algaworks.algafood_api.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-import static com.algaworks.algafood_api.service.infraestructure.repository.spec.RestaurantesSpecs.comFreteGratis;
-import static com.algaworks.algafood_api.service.infraestructure.repository.spec.RestaurantesSpecs.comNomeSemelhante;
 
 @RestController
 @RequestMapping("/testes")

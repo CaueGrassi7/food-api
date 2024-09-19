@@ -1,7 +1,7 @@
 package com.algaworks.algafood_api.controller;
 
 
-import com.algaworks.algafood_api.domain.model.Restaurante;
+import com.algaworks.algafood_api.model.Restaurante;
 import com.algaworks.algafood_api.repository.RestauranteRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

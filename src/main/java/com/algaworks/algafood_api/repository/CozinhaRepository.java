@@ -1,10 +1,8 @@
 package com.algaworks.algafood_api.repository;
 
-import com.algaworks.algafood_api.domain.model.Cozinha;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.algaworks.algafood_api.model.Cozinha;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
