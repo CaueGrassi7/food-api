@@ -1,8 +1,11 @@
 package com.algaworks.algafood_api.controller;
 
 
+import com.algaworks.algafood_api.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood_api.exception.NegocioException;
 import com.algaworks.algafood_api.model.Restaurante;
 import com.algaworks.algafood_api.repository.RestauranteRepository;
+import com.algaworks.algafood_api.service.CadastroRestauranteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,86 +20,49 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/restaurantes")
+@RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
     @Autowired
     private RestauranteRepository restauranteRepository;
+
+    @Autowired
+    private CadastroRestauranteService cadastroRestaurante;
 
     @GetMapping
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable("id") long id) {
-        Optional<Restaurante> data = restauranteRepository.findById(id);
-
-        if (data.isPresent()){
-            return ResponseEntity.ok(data.get());
-        }
-        return ResponseEntity.badRequest().build();
+    @GetMapping("/{restauranteId}")
+    public Restaurante buscar(@PathVariable Long restauranteId) {
+        return cadastroRestaurante.buscarOuFalhar(restauranteId);
     }
 
     @PostMapping
-    public ResponseEntity<Restaurante> adicionar( @Validated @RequestBody Restaurante restaurante) {
-        Restaurante newRestaurante = restauranteRepository.save(restaurante);
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizar(@PathVariable("id") Long id, @RequestBody Restaurante newRestaurante) {
-        Optional<Restaurante> data = restauranteRepository.findById(id);
-
-        if (data.isPresent()) {
-            Restaurante restaurante = data.get();
-
-            // Copia as propriedades de 'newRestaurante' para 'restaurante', ignorando 'id', 'formasPagamento', 'endereço'
-            BeanUtils.copyProperties(newRestaurante, restaurante,
-                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-
-            // Salva a entidade atualizada no banco de dados
-            restauranteRepository.save(restaurante);
-
-            // Retorna o restaurante atualizado com status HTTP 200 OK
-            return ResponseEntity.status(HttpStatus.OK).body(restaurante);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+        try {
+            return cadastroRestaurante.salvar(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
         }
-
-        // Retorna 404 Not Found se o restaurante não for encontrado
-        return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizarParcial(@PathVariable("id") Long id, @RequestBody Map<String, Object> campos) {
-        Optional<Restaurante> data = restauranteRepository.findById(id);
 
-        if (data.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @PutMapping("/{restauranteId}")
+    public Restaurante atualizar(@PathVariable Long restauranteId,
+                                 @RequestBody Restaurante restaurante) {
+        Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
+
+        BeanUtils.copyProperties(restaurante, restauranteAtual,
+                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+
+        try {
+            return cadastroRestaurante.salvar(restauranteAtual);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
         }
-
-        Restaurante restauranteExistente = data.get();
-
-        campos.forEach((key, value) -> {
-            if ("id".equals(key)) {
-                // Ignora o campo 'id' para evitar atualizações indesejadas no identificador
-                return;
-            }
-
-            Field field = ReflectionUtils.findField(Restaurante.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                try {
-                    // Definir o valor diretamente, sem conversões ou verificações
-                    ReflectionUtils.setField(field, restauranteExistente, value);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace(); // Isso pode ser substituído por um tratamento de erro mais adequado
-                }
-            }
-        });
-
-        restauranteRepository.save(restauranteExistente);
-        return ResponseEntity.ok(restauranteExistente);
     }
-
 
 }

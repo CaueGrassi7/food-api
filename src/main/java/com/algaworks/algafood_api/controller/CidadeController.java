@@ -1,7 +1,10 @@
 package com.algaworks.algafood_api.controller;
 
+import com.algaworks.algafood_api.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood_api.exception.NegocioException;
 import com.algaworks.algafood_api.model.Cidade;
 import com.algaworks.algafood_api.repository.CidadeRepository;
+import com.algaworks.algafood_api.service.CadastroCidadeService;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,92 +22,50 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/cidades")
+@RequestMapping(value = "/cidades")
 public class CidadeController {
 
     @Autowired
-    CidadeRepository cidadeRepository;
+    private CidadeRepository cidadeRepository;
+
+    @Autowired
+    private CadastroCidadeService cadastroCidade;
 
     @GetMapping
-    public List<Cidade> listar(){
+    public List<Cidade> listar() {
         return cidadeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cidade> buscar(@PathVariable("id") Long id){
-        Optional<Cidade> data = cidadeRepository.findById(id);
-
-        if (data.isPresent()){
-            return ResponseEntity.ok(data.get());
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Cidade> atualizar(@PathVariable("id") Long id, @RequestBody Cidade newCidade) {
-        Optional<Cidade> data = cidadeRepository.findById(id);
-
-        if (data.isPresent()) {
-            Cidade cidade = data.get();
-
-            // Copia as propriedades de 'newCidade' para 'cidade', ignorando 'id'
-            BeanUtils.copyProperties(newCidade, cidade, "id");
-
-            // Salva a entidade atualizada no banco de dados
-            cidadeRepository.save(cidade);
-
-            // Retorna o cidade atualizada com status HTTP 200 OK
-            return ResponseEntity.ok(cidade);
-        }
-
-        // Retorna 404 Not Found se a cidade não for encontrada
-        return ResponseEntity.notFound().build();
+    @GetMapping("/{cidadeId}")
+    public Cidade buscar(@PathVariable Long cidadeId) {
+        return cadastroCidade.buscarOuFalhar(cidadeId);
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adicionar(@Validated @RequestBody Cidade cidade) {
-        cidadeRepository.save(cidade);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Cidade> deletar(@PathVariable("id") Long id) {
-        Optional<Cidade> data = cidadeRepository.findById(id);
-
-        if (data.isPresent()){
-            try {
-                cidadeRepository.deleteById(id);
-                return ResponseEntity.ok().build();
-
-            } catch (DataIntegrityViolationException e){
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-        }
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cidade adicionar(@RequestBody Cidade cidade) {
+        return cadastroCidade.salvar(cidade);
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Cidade> atualizarParcial(@PathVariable("id") Long id, @RequestBody Map<String, Object> campos) {
-        Optional<Cidade> data = cidadeRepository.findById(id);
+    @PutMapping("/{cidadeId}")
+    public Cidade atualizar(@PathVariable Long cidadeId,
+                            @RequestBody Cidade cidade) {
+        Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 
-        if (data.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+
+        try {
+            return cadastroCidade.salvar(cidadeAtual);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
         }
+    }
 
-        Cidade cidadeExistente = data.get();
-
-        // Itera sobre os campos fornecidos e atualiza os valores no objeto Cidade existente
-        campos.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Cidade.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, cidadeExistente, value);
-            }
-        });
-
-        cidadeRepository.save(cidadeExistente);
-        return ResponseEntity.ok(cidadeExistente);
+    @DeleteMapping("/{cidadeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long cidadeId) {
+        cadastroCidade.excluir(cidadeId);
     }
 
 }

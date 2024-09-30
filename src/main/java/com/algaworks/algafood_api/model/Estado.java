@@ -1,12 +1,15 @@
 package com.algaworks.algafood_api.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Estado {
 
     @EqualsAndHashCode.Include

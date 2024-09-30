@@ -1,13 +1,15 @@
 package com.algaworks.algafood_api.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 
-@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cidade {
 
     @EqualsAndHashCode.Include
